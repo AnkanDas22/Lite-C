@@ -8,12 +8,6 @@ REQUIREMENTS:
 
 Python, GCC
 
-INSTRUCTIONS:
-
-Install webbrowser using these commands in CMD/Command Prompt or the linux alternative:
-
-    pip install webbrowser
-
 RUN:
 
 litec.py
