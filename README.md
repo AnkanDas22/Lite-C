@@ -12,7 +12,7 @@ INSTRUCTIONS:
 
 Install webbrowser using these commands in CMD/Command Prompt or the linux alternative:
 
-pip install webbrowser
+    pip install webbrowser
 
 RUN:
 
