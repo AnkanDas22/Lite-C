@@ -6,7 +6,7 @@ import random
 import webbrowser
 from copy import *
 
-ftypes=[("C/C++ file","*.c *.cpp *.c++ *.cxx *.cc")]
+ftypes=[("C file","*.c")]
 ttl="Choose directory"
 dir1='C:\\'
 root = Tk()
