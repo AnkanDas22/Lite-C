@@ -4,8 +4,9 @@ import os,sys
 from tkinter.filedialog import askopenfilename,asksaveasfile
 import random
 import webbrowser
+from copy import *
 
-ftypes=[("C file","*.c")]
+ftypes=[("C/C++ file","*.c *.cpp *.c++ *.cxx *.cc")]
 ttl="Choose directory"
 dir1='C:\\'
 root = Tk()
@@ -91,6 +92,8 @@ colors=['snow', 'ghost white', 'white smoke', 'gainsboro', 'floral white', 'old 
 root.configure(background="black",menu=Menu)
 root.wm_attributes("-alpha",1.0)
 
+locstore="";
+
 def start_compile():
     output = ""
     code=input_box.get("1.0",END)
@@ -106,7 +109,7 @@ def start_compile():
     #os.popen("start cmd /k a.exe") #uncomment this and comment from 'with open' to output+=line for scanf and CLI calls
     
     label.config(text=output)
-input_box = Tkscrolled.ScrolledText(root, width=55,height=15,bg="black",fg="#15ea18",insertbackground="yellow")
+input_box = Tkscrolled.ScrolledText(root, width=55,height=15,bg="black",fg="#15ea18",insertbackground="yellow",relief=GROOVE)
 input_box.pack(side= TOP,fill="both",expand="yes")
 compile_button = Button(root,text="COMPILE",command=lambda:start_compile(),background='black',foreground='#15ea18')
 compile_button.pack(side=BOTTOM,fill="both",expand="yes")
@@ -117,19 +120,48 @@ def newfile():
     input_box.delete('1.0',END)
 
 def openfile():
+    global locstore
     root.fileName=askopenfilename(filetypes=ftypes,initialdir=dir1,title=ttl)
     try:
         with open(root.fileName,'r') as f:
             newfile()
             input_box.insert(INSERT,f.read())
+            locstore=deepcopy(root.fileName)
     except:
         print("File doesn't exist")
 
 def savefile():
+    global locstore
+    if(locstore==""):
+        root.fileName=asksaveasfile(filetypes=ftypes,initialdir=dir1,title=ttl)
+        with open(root.fileName.name,'w') as f:
+            xx=input_box.get('1.0',END)
+            f.write(xx)
+        locstore=deepcopy(root.fileName.name)
+    else:
+        with open(locstore,'w') as f:
+            xx=input_box.get('1.0',END)
+            f.write(xx)
+        try:
+            with open(locstore,'r') as f:
+                newfile()
+                input_box.insert(INSERT,f.read())
+        except:
+            print("File doesn't exist")
+
+def savefileas():
+    global locstore
     root.fileName=asksaveasfile(filetypes=ftypes,initialdir=dir1,title=ttl)
-    with open(root.fileName.name,'a+') as f:
-        xx=input_box.get('1.0',END)
-        f.write(xx)
+    try:
+        with open(root.fileName.name,'w') as f:
+            xx=input_box.get('1.0',END)
+            f.write(xx)
+            locstore=deepcopy(root.fileName.name)
+        with open(locstore,'r') as f:
+            newfile()
+            input_box.insert(INSERT,f.read())
+    except:
+        print("File doesn't exist")
 
 def curcol():
     selcol=random.choice(colors)
@@ -166,7 +198,7 @@ def authors():
 def opacity(val):
     root.wm_attributes("-alpha",val)
 
-slider=Scale(root,command=opacity,orient=HORIZONTAL,length=200,from_=0.1,to=1.0,tickinterval=0.5,resolution=0.1,background="black",foreground="white")
+slider=Scale(root,command=opacity,orient=HORIZONTAL,length=200,from_=0.1,to=1.0,tickinterval=0.5,resolution=0.1,background="black",foreground="white",relief=GROOVE)
 slider.set(1.0)
 slider.pack()
 
@@ -175,6 +207,7 @@ filemenu=Menu(menubar,tearoff=0)
 filemenu.add_command(label="New",command=newfile)
 filemenu.add_command(label="Open",command=openfile)
 filemenu.add_command(label="Save",command=savefile)
+filemenu.add_command(label="Save As",command=savefileas)
 filemenu.add_separator()
 filemenu.add_command(label="Exit",command=exit)
 designmenu=Menu(menubar,tearoff=0)
